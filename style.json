@@ -1,0 +1,157 @@
+{
+	"QMainWindow":[
+		{
+			"tittle":"Dream Catcher",
+			"icon":":/Icons/logo2.jpg",
+			"frameless": true,
+			"transluscentBg": true,
+			"sizeGrip": "sizeGrip",
+			"navigation":[
+				{
+					"minimize":"minimizeBtn",
+					"close": "closeBtn",
+					"restore":[
+						{
+							"buttonName": "restoreBtn",
+							"normalIcon": ":/Icons/Icons/square.svg",
+							"maximizedIcon": ":/Icons/Icons/copy.svg"
+						}
+					],
+					"moveWindow": "headerContainer",
+					"tittleBar": "headerContainer"
+				}
+			]
+		}
+	],
+	"QCustomSlideMenu": [{
+		"name": "leftMenuContainer",
+		"defaultSize": [{
+			"width": 48,
+			"height": "parent"
+		}],
+		"collapsedSize": [{
+			"width": 48,
+			"height": "parent"
+		}],
+		"expandedSize": [{
+			"width": 200,
+			"height": "parent"
+		}],
+		"toggleButton": [{
+			"buttonName": "menuBtn",
+			"icons": [{
+				"whenMenuIsCollapsed": ":/Icons/Icons/align-center.svg",
+				"whenMenuIsExpanded": ":/Icons/Icons/align-left (1).svg"
+			}]
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}]
+	},
+		{
+		"name": "centerMenuContainer",
+		"defaultSize": [{
+			"width": 0,
+			"height": "parent"
+		}],
+		"collapsedSize": [{
+			"width": 0,
+			"height": "parent"
+		}],
+		"expandedSize": [{
+			"width": 200,
+			"height": "parent"
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}]
+	},
+		{
+		"name": "rightMenuContainer",
+		"defaultSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"collapsedSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"expandedSize": [{
+			"width": 200,
+			"height": "auto"
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}]
+	},
+			{
+		"name": "popupContainer",
+		"defaultSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"collapsedSize": [{
+			"width": 0,
+			"height": "auto"
+		}],
+		"expandedSize": [{
+			"width": 534,
+			"height": 100
+		}],
+		"menuTransitionAnimation": [{
+			"animationDuration": 500,
+			"animationEasingCurve": "Linear"
+		}],
+				"floatPosition": [
+			{
+				"relativeTo": "centralwidget",
+				"position": "center-center",
+				"shadow":[
+					{
+						"color": "#000",
+						"blurRadius": 20,
+						"xOffset": 0,
+						"yOffset": 0
+					}
+				]
+			}
+		],
+				"toggleButton": [{
+			"buttonName": "infoBtn"
+		}]
+			}
+	],
+	"QStackedWidget":[
+			{
+			"name":"addAFilePages",
+			"navigation":[
+				{
+					"navigationButtons":[
+						{
+							"addFileBtn": "page_4"
+						}
+					]
+				}
+			]
+
+		},
+			{
+			"name":"centerMenuPages",
+			"navigation":[
+				{
+					"navigationButtons":[
+						{
+							"infoGatheringBtn": "info_gathering_submenu",
+							"wifiCrackingBtn": "wifi_submenu",
+							"attacksMenu": "attacks_submenu"
+						}
+					]
+				}
+			]
+
+		}
+	]
+}
