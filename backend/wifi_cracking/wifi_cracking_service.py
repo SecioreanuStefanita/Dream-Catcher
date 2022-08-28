@@ -41,8 +41,8 @@ def duplicate_separators(sep_list):
 
 def generate_list(wordList,wifi_name):
     path = create_or_get_dir_location("WIFI_CRACKING_LISTS", wifi_name)
-    separators = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
-    separators_2 = " !\"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    separators = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
+    separators_2 = " !#$%&'()*+,-./:;<=>?@[\]^_`{|}~"
     separators_list = [char for char in separators]
     numbers = [item for item in range(0, datetime.date.today().year + 1)]
     upper_list = [x.upper() for x in wordList]
@@ -103,7 +103,7 @@ def try_and_break(arguments):
     return result
 
 def connect(wifi_name, word):
-    process = subprocess.Popen(shlex.split(f"sudo nmcli dev wifi connect {wifi_name} password \"{word}\""),
+    process = subprocess.Popen(shlex.split(f"sudo nmcli dev wifi connect \"{wifi_name}\" password \"{word}\""),
                                stdout=subprocess.PIPE,
                                universal_newlines=True)
 

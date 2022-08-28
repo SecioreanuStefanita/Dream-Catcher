@@ -1,5 +1,4 @@
 import re
-
 from backend.email_phishing.email_phishing_service import send_emails
 from backend.email_scrapper.email_scrapper_service import execute_email_scrapper
 from backend.payload.payload_service import open_terminal
@@ -12,6 +11,11 @@ from Custom_Widgets.Widgets import *
 from PyQt5.QtCore import *
 import traceback, sys
 
+
+WIFIpressedButtonOption = ''
+network_list = []
+current_file_path = ''
+payload_option = ''
 
 class WorkerSignals(QObject):
     finished = pyqtSignal()
@@ -45,14 +49,6 @@ class Worker(QRunnable):
             self.signals.finished.emit()  # Done
 
 
-WIFIpressedButtonOption = ''
-network_list = []
-current_file_path = ''
-payload_option = ''
-
-
-
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -60,15 +56,14 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         loadJsonStyle(self, self.ui)
+        self.ui.browse_file_1.clicked.connect(self.browse_files)
+        self.ui.browse_file_2.clicked.connect(self.browse_files)
         self.ui.mainPages.setCurrentIndex(9)
         self.ui.addFileBtn.hide()
         self.ui.exitBtn.clicked.connect(QtCore.QCoreApplication.instance().quit)
         self.show()
 
         self.threadpool = QThreadPool()
-
-        self.ui.browse_file_1.clicked.connect(self.browse_files)
-        self.ui.browse_file_2.clicked.connect(self.browse_files)
 
         self.ui.infoGatheringBtn.clicked.connect(lambda: self.ui.centerMenuContainer.expandMenu())
         self.ui.attacksMenu.clicked.connect(lambda: self.ui.centerMenuContainer.expandMenu())
@@ -78,29 +73,32 @@ class MainWindow(QMainWindow):
 
         self.ui.addFileBtn.clicked.connect(lambda: self.ui.rightMenuContainer.expandMenu())
 
-
         self.ui.closeRightMenuBtn.clicked.connect(lambda: self.ui.rightMenuContainer.collapseMenu())
 
         self.ui.closePopupBtn.clicked.connect(lambda: self.ui.popupContainer.collapseMenu())
 
-
-        self.ui.port_scanner_goto.clicked.connect(lambda: [self.ui.mainPages.setCurrentIndex(2)] )
+        self.ui.port_scanner_goto.clicked.connect(lambda: [self.ui.mainPages.setCurrentIndex(2)])
         self.ui.email_scraper_goto.clicked.connect(lambda: [self.ui.mainPages.setCurrentIndex(0)])
         self.ui.fhishing_goto.clicked.connect(lambda: [self.ui.mainPages.setCurrentIndex(7)])
 
         self.ui.openTerminalButton.clicked.connect(lambda: open_terminal())
-        self.ui.openAddFileEmailMenuBtn.clicked.connect(lambda: [ self.ui.addAFilePages.setCurrentIndex(1), self.ui.rightMenuContainer.expandMenu()])
+        self.ui.openAddFileEmailMenuBtn.clicked.connect(
+            lambda: [self.ui.addAFilePages.setCurrentIndex(1), self.ui.rightMenuContainer.expandMenu()])
 
         self.ui.dictionary_wifi_goto.clicked.connect(lambda: [self.make_action('load_wifi_content')])
         self.ui.start_port_scan_btn.clicked.connect(lambda: self.make_action('port_scan'))
         self.ui.email_scrapper_button.clicked.connect(lambda: self.make_action('email_scrapper'))
-        self.ui.fast_wifi_button.clicked.connect(lambda:[self.change_wifi_option('fast'), self.make_action('wifi_crack')])
-        self.ui.intensive_wifi_button.clicked.connect(lambda: [self.change_wifi_option('intensive'), self.make_action('wifi_crack')])
-        self.ui.custom_wifi_button.clicked.connect(lambda: [self.change_wifi_option('custom'),self.make_action('wifi_crack')])
+        self.ui.fast_wifi_button.clicked.connect(
+            lambda: [self.change_wifi_option('fast'), self.make_action('wifi_crack')])
+        self.ui.intensive_wifi_button.clicked.connect(
+            lambda: [self.change_wifi_option('intensive'), self.make_action('wifi_crack')])
+        self.ui.custom_wifi_button.clicked.connect(
+            lambda: [self.change_wifi_option('custom'), self.make_action('wifi_crack')])
         self.ui.option32BitBtn.clicked.connect(
             lambda: [self.change_payload_option('32'), self.make_action('send_emails')])
         self.ui.option64BitBtn.clicked.connect(
             lambda: [self.change_payload_option('64'), self.make_action('send_emails')])
+
     def change_wifi_option(self, option):
         global WIFIpressedButtonOption
         WIFIpressedButtonOption = option
@@ -108,10 +106,17 @@ class MainWindow(QMainWindow):
     def change_payload_option(self, option):
         global payload_option
         payload_option = option
+
     def browse_files(self):
         global current_file_path
         home_path = get_os_homepath()
-        current_file_path = QFileDialog.getOpenFileName(self,'Choose a file', home_path)[0]
+        result = QFileDialog.getOpenFileName(
+            parent=self,
+            dir=home_path,
+            caption=self.tr("Select a file"),
+            options=QtWidgets.QFileDialog.DontUseNativeDialog
+        )
+        current_file_path = result[0]
 
     def check_current_file_path_for_emails(self):
         global current_file_path
@@ -125,6 +130,8 @@ class MainWindow(QMainWindow):
     def thread_get_wifi_networks_complete(self, s):
         text_template = """ <html><head/><body><p><img src=":/Icons/Icons/chevron-left.svg"/><img src=":/Icons/Icons/rss.svg"/><img src=":/Icons/Icons/chevron-right.svg"/><span style=" font-size:14pt; color:#d2602a;">Name: </span><span style=" font-weight:600; color:#ffffff;">placeholder_wifi_name</span></p><p><br/></p><p><br/></p></body></html>"""
         text = ""
+        global network_list
+        network_list = s
         for network in s:
             text += text_template.replace("placeholder_wifi_name", network)
         self.ui.discovered_wifi_text.setText(text)
@@ -133,7 +140,10 @@ class MainWindow(QMainWindow):
         text_template = """<html><head/><body><p><span style=" color:#d2602a;">Port: </span><span style=" color:#ffffff;">placeholder_port</span></p><p><span style=" color:#d2602a;">Port Type: </span><span style=" color:#ffffff;">placeholder_port_type</span></p><p><span style=" color:#d2602a;">Status: </span><span style=" color:#ffffff;">placeholder_port_status</span></p><p><span style=" color:#d2602a;">Protocol: </span><span style=" color:#ffffff;">placeholder_port_protocol</span></p><p><span style=" color:#d2602a;">Product: </span><span style=" color:#ffffff;">placeholder_port_product</span><br/></p><p><br/></p></body></html> """
         text = ""
         for index in range(len(s["port"])):
-            text += text_template.replace("placeholder_port_type", s["port_type"][index]).replace("placeholder_port_status", s["status"][index]).replace("placeholder_port_protocol", s["protocol"][index]).replace("placeholder_port_product", s["product"][index]).replace("placeholder_port", s["port"][index])
+            text += text_template.replace("placeholder_port_type", s["port_type"][index]).replace(
+                "placeholder_port_status", s["status"][index]).replace("placeholder_port_protocol",
+                                                                       s["protocol"][index]).replace(
+                "placeholder_port_product", s["product"][index]).replace("placeholder_port", s["port"][index])
         self.ui.port_scanner_result_txt.setText(text)
 
     def thread_emai_scrapper_complete(self, s):
@@ -145,6 +155,8 @@ class MainWindow(QMainWindow):
             phoneText += phone + '\n'
         self.ui.emails.setText(emailText)
         self.ui.phones.setText(phoneText)
+        global current_file_path
+        current_file_path = ""
 
     def thread_wifi_cracker_complete(self, s):
         section_one_text = """<html><head/><body><p><span style=" color:#d2602a;">Result: </span><span style=" color:#ffffff;">placeholder_result</span></p><p><span style=" color:#d2602a;">Number of tries: </span><span style=" color:#ffffff;">placeholder_no_tries</span></p><p><span style=" color:#d2602a;">Time elapsed: </span><span style=" color:#ffffff;">placeholder_time_elapsed</span></p><p><br/></p></body></html>"""
@@ -153,7 +165,9 @@ class MainWindow(QMainWindow):
         text_1 = ''
         text_2 = ''
         text_3 = ''
-        text_1 += section_one_text.replace("placeholder_result", s["output"]).replace("placeholder_no_tries", s["number_of_tries"]).replace("placeholder_time_elapsed", str(s["time_elapsed"]))
+        text_1 += section_one_text.replace("placeholder_result", s["output"]).replace("placeholder_no_tries",
+                                                                                      s["number_of_tries"]).replace(
+            "placeholder_time_elapsed", str(s["time_elapsed"]))
         text_2 += section_two_text.replace("placeholder_wifi_name", s["wifi_name"])
         text_3 += section_three_text.replace("placeholder_password", s["password"])
         self.ui.section_1.setText(text_1)
@@ -172,7 +186,8 @@ class MainWindow(QMainWindow):
             return True
         else:
             return False
-    def make_action(self,action):
+
+    def make_action(self, action):
         valid = False
         error_reson = ''
         parsedDomain = ''
@@ -210,7 +225,7 @@ class MainWindow(QMainWindow):
                 error_reson = 'to_empty'
                 valid = False
                 at_least_one_error = True
-            if not self.check_current_file_path_for_emails():
+            if not self.check_current_file_path_for_emails() and not to_line_edit:
                 error_reson = 'invalid_emails_file'
                 valid = False
                 at_least_one_error = True
@@ -221,7 +236,7 @@ class MainWindow(QMainWindow):
             if self.check_current_file_path_for_emails() and not at_least_one_error:
                 valid = True
             global payload_option
-            txt = email_field+"~"+action+"~"+password_field+"~"+current_file_path+"~"+subject_line_edit+"~"+body_text_edit+"~"+payload_option+'~'+to_line_edit
+            txt = email_field + "~" + action + "~" + password_field + "~" + current_file_path + "~" + subject_line_edit + "~" + body_text_edit + "~" + payload_option + '~' + to_line_edit
         if action == "load_wifi_content":
             valid = True
         if action == "port_scan":
@@ -240,7 +255,7 @@ class MainWindow(QMainWindow):
         if action == "email_scrapper":
             txt = str(self.ui.address_edit_email_scrapper.text())
             parsedDomain = txt.replace(" ", "")
-            parsedDomain = 'https://'+ parsedDomain
+            parsedDomain = 'https://' + parsedDomain
             valid = validators.url(parsedDomain)
         if valid:
             movie = QMovie('Icons/LoaderIcon.gif')
@@ -248,12 +263,12 @@ class MainWindow(QMainWindow):
             movie.start()
             self.ui.mainPages.setCurrentIndex(4)
             if action == "load_wifi_content":
-                self.make_thread_action('begin'+"~"+action)
+                self.make_thread_action('begin' + "~" + action)
             if action == "port_scan" or action == "email_scrapper":
                 parsedDomain = ''.join(parsedDomain.split("//")[1:])
-                self.make_thread_action(parsedDomain+"~"+action)
+                self.make_thread_action(parsedDomain + "~" + action)
             if action == "wifi_crack":
-                self.make_thread_action(txt+"~"+action+"~"+WIFIpressedButtonOption+"~"+current_file_path)
+                self.make_thread_action(txt + "~" + action + "~" + WIFIpressedButtonOption + "~" + current_file_path)
             if action == "send_emails":
                 self.make_thread_action(txt)
 
@@ -277,7 +292,8 @@ class MainWindow(QMainWindow):
                 if error_reson == 'to_empty':
                     self.ui.popup_txt.setText("To field can not be empty")
                 if error_reson == 'invalid_emails_file':
-                    self.ui.popup_txt.setText("The file you provided is not one resulting from a Dream Catcher Crawl. Please provide a file that resulted from a scan and is located in the Dream_Catcher_Outputs folder")
+                    self.ui.popup_txt.setText(
+                        "The file you provided is not one resulting from a Dream Catcher Crawl. Please provide a file that resulted from a scan and is located in the Dream_Catcher_Outputs folder")
                 if error_reson == 'invalid_email':
                     self.ui.popup_txt.setText("The email you provided seems to not be valid")
                 self.ui.popupContainer.expandMenu()
@@ -286,6 +302,7 @@ class MainWindow(QMainWindow):
                 self.ui.to_line_edit.setText("")
                 self.ui.subject_line_edit.setText("")
                 self.ui.body_text_edit.setText("")
+
 
     def set_page_output(self, index):
         if index == 5:
@@ -328,7 +345,8 @@ class MainWindow(QMainWindow):
             # Execute
             self.threadpool.start(worker)
 
+
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication()
     window = MainWindow()
     app.exec_()

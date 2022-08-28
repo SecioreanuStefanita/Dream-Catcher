@@ -4,7 +4,7 @@
 			"tittle":"Dream Catcher",
 			"icon":":/Icons/logo2.jpg",
 			"frameless": true,
-			"transluscentBg": true,
+			"translucentBg": true,
 			"sizeGrip": "sizeGrip",
 			"navigation":[
 				{
@@ -27,7 +27,7 @@
 		"name": "leftMenuContainer",
 		"defaultSize": [{
 			"width": 48,
-			"height": "parent"
+			"height": "auto"
 		}],
 		"collapsedSize": [{
 			"width": 48,
@@ -35,7 +35,7 @@
 		}],
 		"expandedSize": [{
 			"width": 200,
-			"height": "parent"
+			"height": "auto"
 		}],
 		"toggleButton": [{
 			"buttonName": "menuBtn",
@@ -45,7 +45,7 @@
 			}]
 		}],
 		"menuTransitionAnimation": [{
-			"animationDuration": 500,
+			"animationDuration": 150,
 			"animationEasingCurve": "Linear"
 		}]
 	},
@@ -53,15 +53,15 @@
 		"name": "centerMenuContainer",
 		"defaultSize": [{
 			"width": 0,
-			"height": "parent"
+			"height": "auto"
 		}],
 		"collapsedSize": [{
 			"width": 0,
-			"height": "parent"
+			"height": "auto"
 		}],
 		"expandedSize": [{
 			"width": 200,
-			"height": "parent"
+			"height": "auto"
 		}],
 		"menuTransitionAnimation": [{
 			"animationDuration": 500,

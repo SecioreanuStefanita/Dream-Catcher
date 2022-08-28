@@ -6,6 +6,7 @@ password
 111111
 12345678
 abc123
+parolaStefanita11
 1234567
 6wsrQnaubj5f
 password1

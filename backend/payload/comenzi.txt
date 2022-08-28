@@ -1,2 +1,0 @@
-x86_64-w64-mingw32-gcc -o malware.exe malware.c -lwsock32 -lwininet  //64 biti
-i686-w64-mingw32-gcc -o malware32B.exe malware.c -lwsock32 -lwininet //32 biti
